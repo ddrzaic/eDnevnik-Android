@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".OverallActivity">
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:visibility="visible"
+        app:backgroundTint="@color/colorPrimary"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@+id/userAverageTV"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_graph" />
+
     <ListView
         android:id="@+id/listView"
         android:layout_width="0dp"
@@ -23,6 +37,8 @@
         android:layout_marginStart="32dp"
         android:layout_marginBottom="8dp"
         android:text="TextView"
+        android:textColor="@android:color/background_dark"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -33,6 +49,8 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="8dp"
         android:text="TextView"
+        android:textColor="@android:color/background_dark"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

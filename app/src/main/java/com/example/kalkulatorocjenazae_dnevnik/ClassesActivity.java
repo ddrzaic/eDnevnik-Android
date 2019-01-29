@@ -59,13 +59,15 @@ public class ClassesActivity extends AppCompatActivity {
         tvStudentName.setText(studentName);
 
         list.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,alClasses));
-
+        list.setDivider(null);
+        list.setDividerHeight(0);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String yearUrl=eDnevnik+alHref.get(position);
                 Intent intent = new Intent(getApplicationContext(),OverallActivity.class);
                 intent.putExtra("yearUrlExtra",yearUrl);
+                intent.putExtra("ClassExtra",alClasses.get(position));
                 startActivity(intent);
             }
         });

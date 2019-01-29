@@ -13,6 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class customArrayAdapterOverall extends ArrayAdapter{
     private Context context;
     private List<CourseInfo> courses;
@@ -38,6 +39,10 @@ public class customArrayAdapterOverall extends ArrayAdapter{
         tvTeacherName.setText(course.teacherName);
         tvAverageGrade.setText(course.averageGrade);
         tvUserGrade.setText(course.userGrade);
+
+        if(!OverallActivity.alUserGrade.get(position).equals(String.format("%.0f",Float.valueOf(OverallActivity.alAverageGrade.get(position).substring(16,20).replace(",","."))))){
+            tvUserGrade.setTextColor(Color.RED);
+        }
 
         return view;
     }
