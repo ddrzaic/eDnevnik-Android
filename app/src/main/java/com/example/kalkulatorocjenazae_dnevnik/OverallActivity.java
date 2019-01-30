@@ -32,6 +32,7 @@ public class OverallActivity extends AppCompatActivity {
     String year="";
     ArrayList<String> alCourses = new ArrayList<>();
     ArrayList<String> alTeachers = new ArrayList<>();
+    ArrayList<String> alCourseHTML = new ArrayList<>();
     public static ArrayList<String> alAverageGrade = new ArrayList<>();
     public static ArrayList<String> alRealGrade = new ArrayList<>();
     public static ArrayList<String> alUserGrade = new ArrayList<>();
@@ -39,6 +40,7 @@ public class OverallActivity extends AppCompatActivity {
     ArrayList<CourseInfo> alCourseInfo = new ArrayList<>();
     TextView tvRealAverage;
     TextView tvUserAverage;
+
     customArrayAdapterOverall adapter;
     ListView list;
     String eDnevnik = "https://ocjene.skole.hr";
@@ -91,6 +93,7 @@ public class OverallActivity extends AppCompatActivity {
 
                     for (int i = 0; i < alHref.size(); i++) {
                         String temp = http.GetPageContent(eDnevnik+alHref.get(i));
+                        alCourseHTML.add(temp);
                         Document temp2 = Jsoup.parse(temp);
                         alAverageGrade.add(temp2.getElementsByClass("average").first().text());
                         alRealGrade.add(String.format("%.0f",Float.valueOf(alAverageGrade.get(i).substring(16,20).replace(",","."))));
@@ -152,42 +155,15 @@ public class OverallActivity extends AppCompatActivity {
                                 }
                             });
 
-                           /* list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                                public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                                        final TextView grade=view.findViewById(R.id.gradeTV);
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(OverallActivity.this);
-                                    builder.setTitle(alCourseInfo.get(position).courseName);
-                                    builder.setItems(new CharSequence[]
-                                                    {"1", "2", "3", "4","5","Neocijenjen"},
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    switch (which) {
-                                                        case 0:
-                                                            setGrade(position,"1",grade);
-                                                            break;
-                                                        case 1:
-                                                            setGrade(position,"2",grade);
-                                                            break;
-                                                        case 2:
-                                                            setGrade(position,"3",grade);
-                                                            break;
-                                                        case 3:
-                                                            setGrade(position,"4",grade);
-                                                            break;
-                                                        case 4:
-                                                            setGrade(position,"5",grade);
-                                                            break;
-                                                        case 5:
-                                                            setGrade(position,"0",grade);
-                                                            break;
-                                                    }
-                                                }
-                                            });
-                                    builder.create().show();
-
+                            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    Intent intent=new Intent(getApplicationContext(),CourseActivity.class);
+                                    intent.putExtra("CourseHTMLExtra",alCourseHTML.get(position));
+                                    startActivity(intent);
                                 }
-                            });*/
+                            });
+
                         }
                     });
 
