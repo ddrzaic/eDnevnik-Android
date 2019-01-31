@@ -26,9 +26,6 @@ import java.net.CookieManager;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
-
-
     String loginFormUrl = "https://ocjene.skole.hr/pocetna/posalji/";
     String eDnevnik = "https://ocjene.skole.hr";
     EditText etUsername;
