@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.opengl.Visibility;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -30,7 +31,7 @@ public class OverallActivity extends AppCompatActivity {
 
     String yearUrl="";
     String year="";
-    ArrayList<String> alCourses = new ArrayList<>();
+    public static ArrayList<String> alCourses = new ArrayList<>();
     ArrayList<String> alTeachers = new ArrayList<>();
     ArrayList<String> alCourseHTML = new ArrayList<>();
     public static ArrayList<String> alAverageGrade = new ArrayList<>();
@@ -45,6 +46,7 @@ public class OverallActivity extends AppCompatActivity {
     ListView list;
     String eDnevnik = "https://ocjene.skole.hr";
     HTTPSConnection http = new HTTPSConnection();
+    FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,12 +59,13 @@ public class OverallActivity extends AppCompatActivity {
         yearUrl=intent.getStringExtra("yearUrlExtra");
         year=intent.getStringExtra("ClassExtra");
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
+        fab.hide();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+              Intent intent = new Intent(getApplicationContext(),GraphOverall.class);
+              startActivity(intent);
             }
         });
 
@@ -114,6 +117,7 @@ public class OverallActivity extends AppCompatActivity {
                         public void run() {
                             adapter=new customArrayAdapterOverall(getApplicationContext(),0,alCourseInfo);
                             list.setAdapter(adapter);
+                            fab.show();
                             tvRealAverage.setText("Stvarni prosjek: "+getRealAverage());
                             tvUserAverage.setText("Prosjek: "+getUserAverage());
                             list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -207,6 +211,16 @@ public class OverallActivity extends AppCompatActivity {
             }
         }
         return String.format("%.2f",(float)sum/counter);
+    }
+
+    public void emptyArraylist(){
+        alRealGrade=new ArrayList<>();
+        alCourses=new ArrayList<>();
+        alUserGrade=new ArrayList<>();
+        alCourseInfo=new ArrayList<>();
+        alHref=new ArrayList<>();
+        alAverageGrade=new ArrayList<>();
+        alCourses=new ArrayList<>();
     }
 
 

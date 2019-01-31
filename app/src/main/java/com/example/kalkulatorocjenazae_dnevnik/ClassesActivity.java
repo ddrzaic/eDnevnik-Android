@@ -23,7 +23,6 @@ public class ClassesActivity extends AppCompatActivity {
     ListView list;
     TextView tvStudentName;
     String studentName="";
-    ClassInfo[] CIClasses;
     String eDnevnik = "https://ocjene.skole.hr";
     ArrayList<String> alClasses=new ArrayList<>();
     ArrayList<String> alHref=new ArrayList<>();
