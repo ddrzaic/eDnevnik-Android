@@ -24,7 +24,7 @@ import java.util.ArrayList;
 public class CourseActivity extends AppCompatActivity {
     String courseHTML="";
     String courseName="";
-    ArrayList<String> alGrades = new ArrayList<>();
+    public static ArrayList<String> alGrades = new ArrayList<>();
     ArrayList<String> alNotes = new ArrayList<>();
     ArrayList<String> alDates = new ArrayList<>();
     ArrayList<GradeInfo> alGradeInfo = new ArrayList<>();
@@ -37,6 +37,9 @@ public class CourseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
+        emptyArraylists();
+
+
         Intent intent = getIntent();
         TextView tvCourseName=findViewById(R.id.courseNameTV);
         list = findViewById(R.id.listGrades);
@@ -87,7 +90,7 @@ public class CourseActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Not yet",Toast.LENGTH_LONG).show();
+                startActivity(new Intent(getApplicationContext(),GraphCourse.class));
             }
         });
 
@@ -154,5 +157,13 @@ public class CourseActivity extends AppCompatActivity {
             tvAverage.setText("Prosjek: "+String.format("%.2f",(float)sum/alGrades.size()));
         }
 
+    }
+    public void emptyArraylists(){
+        courseHTML="";
+        courseName="";
+        alGrades = new ArrayList<>();
+        alNotes = new ArrayList<>();
+        alDates = new ArrayList<>();
+        alGradeInfo = new ArrayList<>();
     }
 }

@@ -31,7 +31,12 @@ public class GraphOverall extends AppCompatActivity {
 
 
         for(int i=0;i<OverallActivity.alCourses.size();i++){
-            entries.add(new BarEntry(i,new float[]{Float.parseFloat(OverallActivity.alRealGrade.get(i)),Float.parseFloat(OverallActivity.alUserGrade.get(i))-Float.parseFloat(OverallActivity.alRealGrade.get(i))}));
+            if(Float.parseFloat(OverallActivity.alUserGrade.get(i))>Float.parseFloat(OverallActivity.alRealGrade.get(i))){
+                entries.add(new BarEntry(i,new float[]{Float.parseFloat(OverallActivity.alRealGrade.get(i)),Float.parseFloat(OverallActivity.alUserGrade.get(i))-Float.parseFloat(OverallActivity.alRealGrade.get(i)),0}));
+            }else {
+                entries.add(new BarEntry(i,new float[]{Float.parseFloat(OverallActivity.alUserGrade.get(i)),0,Float.parseFloat(OverallActivity.alRealGrade.get(i))-Float.parseFloat(OverallActivity.alUserGrade.get(i))}));
+            }
+
         }
 
         alXAxisDataGrades = new ArrayList<>();
@@ -40,15 +45,15 @@ public class GraphOverall extends AppCompatActivity {
         }
 
         BarDataSet dataSet = new BarDataSet(entries,""); // add entries to dataset
-        dataSet.setStackLabels(new String[]{"Stvarne ocjene","Korisnik"});
-        dataSet.setColors(new int[]{Color.BLUE,Color.RED});
+        dataSet.setStackLabels(new String[]{"Stvarne ocjene","Veće ocjene","Manje ocjene"});
+        dataSet.setColors(new int[]{Color.argb(120,100,100,100),Color.argb(255,100,200,100),Color.argb(255,200,100,100)});
         dataSet.setDrawValues(false);
 
 
         BarData barData = new BarData(dataSet);
 
         chart.setDragEnabled(true);
-
+        chart.getDescription().setEnabled(false);
         chart.setHighlightPerDragEnabled(true);
         chart.setData(barData);
         //chart.setData(barDataReal);

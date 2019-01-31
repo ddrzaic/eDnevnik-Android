@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".GraphOverall"></activity>
+        <activity android:name=".GraphCourse"></activity>
+        <activity android:name=".GraphOverall" />
         <activity android:name=".CourseActivity" />
         <activity android:name=".OverallActivity" />
         <activity android:name=".ClassesActivity" />

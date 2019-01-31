@@ -54,7 +54,7 @@ public class OverallActivity extends AppCompatActivity {
         list=findViewById(R.id.listView);
         tvRealAverage=findViewById(R.id.realAverageTV);
         tvUserAverage=findViewById(R.id.userAverageTV);
-
+        emptyArraylist();
         Intent intent= getIntent();
         yearUrl=intent.getStringExtra("yearUrlExtra");
         year=intent.getStringExtra("ClassExtra");
