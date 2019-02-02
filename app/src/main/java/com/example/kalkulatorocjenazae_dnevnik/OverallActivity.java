@@ -76,9 +76,24 @@ public class OverallActivity extends AppCompatActivity {
                 try {
                     String result = http.GetPageContent(yearUrl);
                     Document doc=Jsoup.parse(result);
-                    System.out.println(doc.html());
                     Element coursesDiv = doc.getElementById("courses");
                     Elements courses=coursesDiv.getElementsByClass("course");
+
+
+                    String examHref=doc.getElementsByAttributeValueContaining("href","ispiti").attr("href");
+                    String examHtml=http.GetPageContent(eDnevnik+examHref);
+                    Document parsedExamHtml=Jsoup.parse(examHtml);
+                    Element examTable=parsedExamHtml.getElementsByTag("table").first();
+                    Elements tr=examTable.getElementsByTag("tr");
+                    ArrayList<ExamInfo> examInfos = new ArrayList<>();
+                    for(Element el : tr){
+                        Elements td=el.getElementsByTag("td");
+                        if(!td.isEmpty()) examInfos.add(new ExamInfo(td.first().text(),td.get(1).text(),td.get(2).text()));
+                    }
+
+
+
+
                     Log.e("year   ",year);
                     for(Element course : courses){
                         alTeachers.add(course.select("span.course-info").text());

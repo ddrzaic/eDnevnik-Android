@@ -15,6 +15,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ClassesActivity extends AppCompatActivity {
@@ -39,7 +40,7 @@ public class ClassesActivity extends AppCompatActivity {
         html=intent.getStringExtra("resultExtra");
         Document doc= Jsoup.parse(html);
         Element classes=doc.getElementById("classes");
-        System.out.println(classes.html());
+        System.out.println(doc.html());
         Elements elClasses=classes.select("span.school-class");
         for(Element Class : elClasses){
             alClasses.add(Class.text());

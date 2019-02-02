@@ -29,9 +29,7 @@ public class GraphCourse extends AppCompatActivity {
         }
 
         LineDataSet dataSet = new LineDataSet(entries, "Ocjene"); // add entries to dataset
-        dataSet.setColor(Color.argb(255,100,100,255));
-        dataSet.setDrawFilled(true);
-        dataSet.setFillColor(Color.argb(220,100,100,255));
+        dataSet.setColor(Color.argb(255,50,50,255));
         LineData lineData = new LineData(dataSet);
         lineData.setDrawValues(false);
         chart.setData(lineData);
