@@ -31,10 +31,12 @@ public class GraphOverall extends AppCompatActivity {
 
 
         for(int i=0;i<OverallActivity.alCourses.size();i++){
-            if(Float.parseFloat(OverallActivity.alUserGrade.get(i))>Float.parseFloat(OverallActivity.alRealGrade.get(i))){
-                entries.add(new BarEntry(i,new float[]{Float.parseFloat(OverallActivity.alRealGrade.get(i)),Float.parseFloat(OverallActivity.alUserGrade.get(i))-Float.parseFloat(OverallActivity.alRealGrade.get(i)),0}));
-            }else {
-                entries.add(new BarEntry(i,new float[]{Float.parseFloat(OverallActivity.alUserGrade.get(i)),0,Float.parseFloat(OverallActivity.alRealGrade.get(i))-Float.parseFloat(OverallActivity.alUserGrade.get(i))}));
+            if(!OverallActivity.alUserGrade.get(i).equals("0")){
+                if(Float.parseFloat(OverallActivity.alUserGrade.get(i))>Float.parseFloat(OverallActivity.alRealGrade.get(i))){
+                    entries.add(new BarEntry(i,new float[]{Float.parseFloat(OverallActivity.alRealGrade.get(i)),Float.parseFloat(OverallActivity.alUserGrade.get(i))-Float.parseFloat(OverallActivity.alRealGrade.get(i)),0}));
+                }else {
+                    entries.add(new BarEntry(i,new float[]{Float.parseFloat(OverallActivity.alUserGrade.get(i)),0,Float.parseFloat(OverallActivity.alRealGrade.get(i))-Float.parseFloat(OverallActivity.alUserGrade.get(i))}));
+                }
             }
 
         }

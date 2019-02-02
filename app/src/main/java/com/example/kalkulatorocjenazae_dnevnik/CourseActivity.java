@@ -138,10 +138,10 @@ public class CourseActivity extends AppCompatActivity {
     }
 
     public void addGrade(String grade){
-        alGrades.add(grade);
+        alGrades.add(0,grade);
         alNotes.add("Dodana ocjena");
         alDates.add("Dodana ocjena");
-        alGradeInfo.add(new GradeInfo(grade,"Dodana ocjena","Dodana ocjena"));
+        alGradeInfo.add(0,new GradeInfo(grade,"Dodana ocjena","Dodana ocjena"));
         adapter.notifyDataSetChanged();
         setAverage();
     }
