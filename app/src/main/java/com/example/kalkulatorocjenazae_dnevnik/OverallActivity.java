@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,7 +29,7 @@ import java.net.CookieManager;
 import java.util.ArrayList;
 
 public class OverallActivity extends AppCompatActivity {
-
+    public static ArrayList<ExamInfo> examInfos;
     String yearUrl="";
     String year="";
     public static ArrayList<String> alCourses = new ArrayList<>();
@@ -41,12 +42,12 @@ public class OverallActivity extends AppCompatActivity {
     ArrayList<CourseInfo> alCourseInfo = new ArrayList<>();
     TextView tvRealAverage;
     TextView tvUserAverage;
-
+    ImageButton graphButton;
+    ImageButton examsButton;
     customArrayAdapterOverall adapter;
     ListView list;
     String eDnevnik = "https://ocjene.skole.hr";
     HTTPSConnection http = new HTTPSConnection();
-    FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,20 +55,15 @@ public class OverallActivity extends AppCompatActivity {
         list=findViewById(R.id.listView);
         tvRealAverage=findViewById(R.id.realAverageTV);
         tvUserAverage=findViewById(R.id.userAverageTV);
+        graphButton=findViewById(R.id.graphButtonView);
+        examsButton=findViewById(R.id.examsButtonView);
         emptyArraylist();
         Intent intent= getIntent();
         yearUrl=intent.getStringExtra("yearUrlExtra");
         year=intent.getStringExtra("ClassExtra");
+        graphButton.setVisibility(View.INVISIBLE);
+        examsButton.setVisibility(View.INVISIBLE);
 
-        fab = findViewById(R.id.fab);
-        fab.hide();
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-              Intent intent = new Intent(getApplicationContext(),GraphOverall.class);
-              startActivity(intent);
-            }
-        });
 
 
         new Thread(new Runnable() {
@@ -80,16 +76,21 @@ public class OverallActivity extends AppCompatActivity {
                     Elements courses=coursesDiv.getElementsByClass("course");
 
 
-                    String examHref=doc.getElementsByAttributeValueContaining("href","ispiti").attr("href");
-                    String examHtml=http.GetPageContent(eDnevnik+examHref);
-                    Document parsedExamHtml=Jsoup.parse(examHtml);
-                    Element examTable=parsedExamHtml.getElementsByTag("table").first();
-                    Elements tr=examTable.getElementsByTag("tr");
-                    ArrayList<ExamInfo> examInfos = new ArrayList<>();
-                    for(Element el : tr){
-                        Elements td=el.getElementsByTag("td");
-                        if(!td.isEmpty()) examInfos.add(new ExamInfo(td.first().text(),td.get(1).text(),td.get(2).text()));
+                    try {
+                        String examHref=doc.getElementsByAttributeValueContaining("href","ispiti").attr("href");
+                        String examHtml=http.GetPageContent(eDnevnik+examHref);
+                        Document parsedExamHtml=Jsoup.parse(examHtml);
+                        Element examTable=parsedExamHtml.getElementsByTag("table").first();
+                        Elements tr=examTable.getElementsByTag("tr");
+
+                        for(Element el : tr){
+                            Elements td=el.getElementsByTag("td");
+                            if(!td.isEmpty()) examInfos.add(new ExamInfo(td.first().text(),td.get(1).text(),td.get(2).text()));
+                        }
+                    }catch (NullPointerException e){
+                        examInfos.add(new ExamInfo("Nema ispita","",""));
                     }
+
 
 
 
@@ -132,9 +133,11 @@ public class OverallActivity extends AppCompatActivity {
                         public void run() {
                             adapter=new customArrayAdapterOverall(getApplicationContext(),0,alCourseInfo);
                             list.setAdapter(adapter);
-                            fab.show();
                             tvRealAverage.setText("Stvarni prosjek: "+getRealAverage());
                             tvUserAverage.setText("Prosjek: "+getUserAverage());
+                            examsButton.setVisibility(View.VISIBLE);
+                            graphButton.setVisibility(View.VISIBLE);
+
                             list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                                 @Override
                                 public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -193,6 +196,20 @@ public class OverallActivity extends AppCompatActivity {
         }).start();
 
 
+        graphButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(),GraphOverall.class));
+            }
+        });
+
+        examsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(),ExamsActivity.class));
+            }
+        });
+
 
     }
 
@@ -236,6 +253,7 @@ public class OverallActivity extends AppCompatActivity {
         alHref=new ArrayList<>();
         alAverageGrade=new ArrayList<>();
         alCourses=new ArrayList<>();
+        examInfos = new ArrayList<>();
     }
 
 

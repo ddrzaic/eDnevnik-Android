@@ -5,13 +5,10 @@ public class ExamInfo {
     String course="";
     String date="";
 
-    public ExamInfo(String nameArg,String courseArg,String dateArg){
+    public ExamInfo(String courseArg,String nameArg,String dateArg){
         examName=nameArg;
         course=courseArg;
         date=dateArg;
     }
 
-    public String toStr(){
-        return examName+"  "+course+"  "+date;
-    }
 }
