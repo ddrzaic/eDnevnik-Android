@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -64,14 +65,40 @@ public class OverallActivity extends AppCompatActivity {
         graphButton.setVisibility(View.INVISIBLE);
         examsButton.setVisibility(View.INVISIBLE);
 
-
-
         new Thread(new Runnable() {
             public void run() {
 
                 try {
                     String result = http.GetPageContent(yearUrl);
                     Document doc=Jsoup.parse(result);
+                    boolean hasNewGrades=false;
+                    if(!doc.getElementsByAttributeValueContaining("href","nove").isEmpty())hasNewGrades=true;
+                    if(hasNewGrades){
+                        final String newGradesHref=doc.getElementsByAttributeValueContaining("href","nove").attr("href");
+                        View.OnClickListener snackBarClickListener=new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                try {
+                                    String table=http.GetPageContent(eDnevnik+newGradesHref);
+                                    Document parsedNoveOcjene=Jsoup.parse(table);
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+
+                                    builder.setMessage(parsedNoveOcjene.getElementsByTag("table").first().text())
+                                            .setTitle("Nove ocjene");
+
+                                    AlertDialog dialog = builder.create();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+
+
+                        Snackbar.make(findViewById(android.R.id.content), "Nove ocjene", Snackbar.LENGTH_LONG)
+                                .setAction("Pregledaj", snackBarClickListener)
+                                .show();
+                    }
+
                     Element coursesDiv = doc.getElementById("courses");
                     Elements courses=coursesDiv.getElementsByClass("course");
 
@@ -212,6 +239,7 @@ public class OverallActivity extends AppCompatActivity {
 
 
     }
+
 
     private void setGrade(int pos,String grade,TextView tv){
         alUserGrade.set(pos,grade);
