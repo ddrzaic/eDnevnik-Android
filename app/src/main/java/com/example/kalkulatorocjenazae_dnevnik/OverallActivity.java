@@ -39,6 +39,7 @@ public class OverallActivity extends AppCompatActivity {
     public static ArrayList<String> alAverageGrade = new ArrayList<>();
     public static ArrayList<String> alRealGrade = new ArrayList<>();
     public static ArrayList<String> alUserGrade = new ArrayList<>();
+    public static ArrayList<NewGradeInfo> newGradeInfos;
     ArrayList<String> alHref = new ArrayList<>();
     ArrayList<CourseInfo> alCourseInfo = new ArrayList<>();
     TextView tvRealAverage;
@@ -65,6 +66,7 @@ public class OverallActivity extends AppCompatActivity {
         graphButton.setVisibility(View.INVISIBLE);
         examsButton.setVisibility(View.INVISIBLE);
 
+
         new Thread(new Runnable() {
             public void run() {
 
@@ -80,21 +82,28 @@ public class OverallActivity extends AppCompatActivity {
                             public void onClick(View v) {
                                 try {
                                     String table=http.GetPageContent(eDnevnik+newGradesHref);
-                                    Document parsedNoveOcjene=Jsoup.parse(table);
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                                    final Document parsedNoveOcjene=Jsoup.parse(table);
 
-                                    builder.setMessage(parsedNoveOcjene.getElementsByTag("table").first().text())
-                                            .setTitle("Nove ocjene");
 
-                                    AlertDialog dialog = builder.create();
+
+                                            Elements tableRows=parsedNoveOcjene.getElementsByTag("tr");
+                                            tableRows.remove(0);
+                                            ArrayList<Elements> tableColumns=new ArrayList<>();
+                                            newGradeInfos=new ArrayList<>();
+                                            for(int i=0;i<tableRows.size();i++){
+                                                tableColumns.add(tableRows.get(i).getElementsByTag("td"));
+                                                newGradeInfos.add(new NewGradeInfo(tableColumns.get(i).get(0).text(),tableColumns.get(i).get(1).text(),tableColumns.get(i).get(2).text(),tableColumns.get(i).get(3).text()));
+                                            }
+
+                                            startActivity(new Intent(getApplicationContext(),NewGradesActivity.class));
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
                         };
 
-
-                        Snackbar.make(findViewById(android.R.id.content), "Nove ocjene", Snackbar.LENGTH_LONG)
+                        Snackbar.make(findViewById(android.R.id.content), "Nove ocjene", Snackbar.LENGTH_INDEFINITE)
                                 .setAction("Pregledaj", snackBarClickListener)
                                 .show();
                     }

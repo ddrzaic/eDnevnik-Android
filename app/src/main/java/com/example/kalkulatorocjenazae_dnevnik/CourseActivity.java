@@ -27,7 +27,7 @@ public class CourseActivity extends AppCompatActivity {
     public static ArrayList<String> alGrades = new ArrayList<>();
     ArrayList<String> alNotes = new ArrayList<>();
     ArrayList<String> alDates = new ArrayList<>();
-    ArrayList<GradeInfo> alGradeInfo = new ArrayList<>();
+    public static ArrayList<GradeInfo> alGradeInfo = new ArrayList<>();
     ListView list;
     ArrayAdapter adapter;
     TextView tvAverage;

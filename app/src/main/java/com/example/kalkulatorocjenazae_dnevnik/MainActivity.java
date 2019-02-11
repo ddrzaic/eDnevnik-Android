@@ -49,41 +49,11 @@ public class MainActivity extends AppCompatActivity {
             etUsername.setText(username);
             etPassword.setText(passwd);
         }catch(FileNotFoundException e){
-            AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-            LinearLayout layout = new LinearLayout(MainActivity.this);
-            layout.setOrientation(LinearLayout.VERTICAL);
-            alert.setTitle("Prijava");
-            final EditText ime = new EditText(MainActivity.this);
-            ime.setHint("Korisničko ime:");
-            layout.addView(ime);
-            final EditText sifra= new EditText(MainActivity.this);
-            sifra.setHint("Lozinka:");
-            sifra.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            sifra.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            layout.addView(sifra);
-            alert.setView(layout);
-            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    username = ime.getText().toString();
-                    passwd = sifra.getText().toString();
-                    etUsername.setText(username);
-                    etPassword.setText(passwd);
-                    user = new ArrayList<>();
-                    try {
-                        user.add(AESCrypt.encrypt(username));
-                        user.add(AESCrypt.encrypt(passwd));
-                        FileIO.writeArrayListToFile(user, "user", getApplicationContext());
-                    } catch (Exception e) {
-                        Log.e("AES encrypt error:", e.toString());
-                    }
-                }
-            });
-            alert.show();
+            etUsername.setText("");
+            etPassword.setText("");
         }catch (Exception f){
             Toast.makeText(getApplicationContext(),"Encryption error",Toast.LENGTH_SHORT);
         }
-
-
     }
 
 
@@ -91,7 +61,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void login(View v){
 
+        try {
+            user=new ArrayList<>();
+            user.add(AESCrypt.encrypt(etUsername.getText().toString()));
+            user.add(AESCrypt.encrypt( etPassword.getText().toString()));
+            FileIO.writeArrayListToFile(user, "user", getApplicationContext());
+        } catch (Exception e) {
+            Toast.makeText(this,"Error while writing user data!",Toast.LENGTH_LONG).show();
+        }
+
         new Thread(new Runnable() {
+
             public void run() {
                 HTTPSConnection http = new HTTPSConnection();
 
@@ -120,8 +100,7 @@ public class MainActivity extends AppCompatActivity {
                         });
 
                     }
-
-
+                    
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 } catch (Exception e) {
