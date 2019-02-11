@@ -1,22 +1,27 @@
 package com.example.kalkulatorocjenazae_dnevnik;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 public class ClassesActivity extends AppCompatActivity {
 
@@ -33,6 +38,9 @@ public class ClassesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classes);
+
+
+
 
         list=findViewById(R.id.listView);
         tvStudentName=findViewById(R.id.tvname);
@@ -51,7 +59,20 @@ public class ClassesActivity extends AppCompatActivity {
                 alHref.add(el.attr("href"));
         }
 
-        System.out.println("Hrefovi:"+alHref);
+        FileIO.writeToFile(alHref.get(0),getApplicationContext(),"CurrentClassHref");
+
+
+
+        createNotificationChannel();
+
+        PeriodicWorkRequest.Builder WorkBuilder =
+                new PeriodicWorkRequest.Builder(BackgroundWorker.class, 15,
+                        TimeUnit.MINUTES);
+
+        PeriodicWorkRequest myWork = WorkBuilder.build();
+        WorkManager.getInstance().enqueue(myWork);          //Start BackgroungWorker
+
+
 
 
 
@@ -71,5 +92,19 @@ public class ClassesActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void createNotificationChannel() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "eDnevnik";
+            String description = "Kalkulator ocjena za eDnevnik";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("eDnevnik", name, importance);
+            channel.setDescription(description);
+            channel.enableVibration(true);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }

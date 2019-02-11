@@ -3,21 +3,15 @@ package com.example.kalkulatorocjenazae_dnevnik;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.opengl.Visibility;
-import android.support.design.widget.FloatingActionButton;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,8 +19,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.FileNotFoundException;
-import java.net.CookieHandler;
-import java.net.CookieManager;
 import java.util.ArrayList;
 
 public class OverallActivity extends AppCompatActivity {
@@ -46,6 +38,7 @@ public class OverallActivity extends AppCompatActivity {
     TextView tvUserAverage;
     ImageButton graphButton;
     ImageButton examsButton;
+    ImageButton resetButton;
     customArrayAdapterOverall adapter;
     ListView list;
     String eDnevnik = "https://ocjene.skole.hr";
@@ -59,12 +52,15 @@ public class OverallActivity extends AppCompatActivity {
         tvUserAverage=findViewById(R.id.userAverageTV);
         graphButton=findViewById(R.id.graphButtonView);
         examsButton=findViewById(R.id.examsButtonView);
+        resetButton=findViewById(R.id.resetButtonView);
         emptyArraylist();
         Intent intent= getIntent();
         yearUrl=intent.getStringExtra("yearUrlExtra");
         year=intent.getStringExtra("ClassExtra");
         graphButton.setVisibility(View.INVISIBLE);
         examsButton.setVisibility(View.INVISIBLE);
+        resetButton.setVisibility(View.INVISIBLE);
+
 
 
         new Thread(new Runnable() {
@@ -173,6 +169,7 @@ public class OverallActivity extends AppCompatActivity {
                             tvUserAverage.setText("Prosjek: "+getUserAverage());
                             examsButton.setVisibility(View.VISIBLE);
                             graphButton.setVisibility(View.VISIBLE);
+                            resetButton.setVisibility(View.VISIBLE);
 
                             list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                                 @Override
@@ -209,7 +206,7 @@ public class OverallActivity extends AppCompatActivity {
                                     builder.create().show();
 
 
-                                    return false;
+                                    return true;
                                 }
                             });
 
@@ -243,6 +240,19 @@ public class OverallActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(),ExamsActivity.class));
+            }
+        });
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alUserGrade=new ArrayList<>(alRealGrade);
+                System.out.println(alUserGrade);
+                for(int i=0;i<alCourseInfo.size();i++){
+                    alCourseInfo.set(i,new CourseInfo(alCourses.get(i),alTeachers.get(i),alAverageGrade.get(i),alUserGrade.get(i)));
+                }
+                FileIO.writeArrayListToFile(alUserGrade,year,getApplicationContext());
+                adapter.notifyDataSetChanged();
+                tvUserAverage.setText("Prosjek: "+getUserAverage());
             }
         });
 

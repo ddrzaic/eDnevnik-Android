@@ -82,10 +82,8 @@ public class GraphCourse extends AppCompatActivity {
         chart.getXAxis().setGranularityEnabled(true);
         chart.getXAxis().setLabelCount(gradeDate.size());
         chart.setScaleMinima(3,1);
-        chart.setExtraOffsets(50, 20, 10, 20);
+        chart.setExtraOffsets(50, 20, 50, 20);
         chart.setRenderer(new RotatedBarChartRenderer(chart, chart.getAnimator(), chart.getViewPortHandler()));
         chart.invalidate(); // refresh
-
-
     }
 }
