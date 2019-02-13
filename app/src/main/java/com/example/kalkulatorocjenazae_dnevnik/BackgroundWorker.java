@@ -9,6 +9,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
@@ -69,24 +70,45 @@ public class BackgroundWorker extends Worker {
                         boolean hasNewGrades=false;
                         if(!doc.getElementsByAttributeValueContaining("href","nove").isEmpty())hasNewGrades=true;
                         if(hasNewGrades){
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);;
-                            int id = createID();
 
-                            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            final String newGradesHref=doc.getElementsByAttributeValueContaining("href","nove").attr("href");
+                            String table=http.GetPageContent(eDnevnik+newGradesHref);
+                            final Document parsedNoveOcjene=Jsoup.parse(table);
 
-                            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "eDnevnik")
-                                    .setSmallIcon(R.drawable.ic_notify)
-                                    .setContentTitle("eDnevnik")
-                                    .setContentText("Nove ocjene!")
-                                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                                    .setContentIntent(pendingIntent)
-                                    .setStyle(new NotificationCompat.BigTextStyle()
-                                            .bigText("Upisane nove ocjene!"))
-                                    .setAutoCancel(true);
 
-                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-                            notificationManager.notify(id, mBuilder.build());
+
+                            Elements tableRows=parsedNoveOcjene.getElementsByTag("tr");
+                            tableRows.remove(0);
+                            ArrayList<Elements> tableColumns=new ArrayList<>();
+                            ArrayList<NewGradeInfo> newGradeInfos=new ArrayList<>();
+                            for(int i=0;i<tableRows.size();i++){
+                                tableColumns.add(tableRows.get(i).getElementsByTag("td"));
+                                newGradeInfos.add(new NewGradeInfo(tableColumns.get(i).get(0).text(),tableColumns.get(i).get(1).text(),tableColumns.get(i).get(2).text(),tableColumns.get(i).get(3).text()));
+                            }
+
+
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+
+                            for(int i=0;i<newGradeInfos.size();i++){
+                                int id = createID();
+
+                                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "eDnevnik")
+                                        .setSmallIcon(R.drawable.ic_notify)
+                                        .setContentTitle("eDnevnik - Nove ocjene!")
+                                        .setContentText(newGradeInfos.get(i).course)
+                                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                        .setContentIntent(pendingIntent)
+                                        .setStyle(new NotificationCompat.BigTextStyle()
+                                                .bigText(newGradeInfos.get(i).note+"  "+newGradeInfos.get(i).grade))
+                                        .setAutoCancel(true);
+
+                                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+                                notificationManager.notify(id, mBuilder.build());
+                            }
+
                         }
                     }
                 } catch (UnsupportedEncodingException e) {

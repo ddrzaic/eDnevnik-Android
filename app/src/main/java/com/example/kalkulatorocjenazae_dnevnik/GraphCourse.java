@@ -1,8 +1,8 @@
 package com.example.kalkulatorocjenazae_dnevnik;
 
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -12,7 +12,6 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.ArrayList;
@@ -36,10 +35,10 @@ public class GraphCourse extends AppCompatActivity {
         ///////////////////////////////////////
 
         final ArrayList<String> gradeDate = new ArrayList<>();
-        final ArrayList<String> gradeNote = new ArrayList<>();
+        final ArrayList<String> gradeGrade = new ArrayList<>();
         for(int i=CourseActivity.alGradeInfo.size()-1;i>=0;i--){
             gradeDate.add(CourseActivity.alGradeInfo.get(i).date);
-            gradeNote.add(CourseActivity.alGradeInfo.get(i).note);
+            gradeGrade.add(CourseActivity.alGradeInfo.get(i).grade);
         }
 
         ///////////////////////////////
@@ -52,7 +51,7 @@ public class GraphCourse extends AppCompatActivity {
         lineData.setValueFormatter(new IValueFormatter() {
             @Override
             public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                return gradeNote.get((int) entry.getX());
+                return gradeGrade.get((int) entry.getX());
             }
         });
 
@@ -82,8 +81,7 @@ public class GraphCourse extends AppCompatActivity {
         chart.getXAxis().setGranularityEnabled(true);
         chart.getXAxis().setLabelCount(gradeDate.size());
         chart.setScaleMinima(3,1);
-        chart.setExtraOffsets(50, 20, 50, 20);
-        chart.setRenderer(new RotatedBarChartRenderer(chart, chart.getAnimator(), chart.getViewPortHandler()));
+        chart.setExtraOffsets(10, 20, 10, 20);
         chart.invalidate(); // refresh
     }
 }
