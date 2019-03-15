@@ -1,11 +1,10 @@
 package com.example.kalkulatorocjenazae_dnevnik;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class NewGradesActivity extends AppCompatActivity {
 
@@ -18,5 +17,6 @@ public class NewGradesActivity extends AppCompatActivity {
         lv=findViewById(R.id.listViewNewGrades);
         customArrayAdapterNewGrade adapter=new customArrayAdapterNewGrade(getApplicationContext(),0,OverallActivity.newGradeInfos);
         lv.setAdapter(adapter);
+        FileIO.writeArrayListToFile(new ArrayList<String>(),"newGrades",getApplicationContext());
     }
 }

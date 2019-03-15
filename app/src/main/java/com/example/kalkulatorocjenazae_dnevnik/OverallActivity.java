@@ -69,40 +69,6 @@ public class OverallActivity extends AppCompatActivity {
                 try {
                     String result = http.GetPageContent(yearUrl);
                     Document doc=Jsoup.parse(result);
-                    boolean hasNewGrades=false;
-                    if(!doc.getElementsByAttributeValueContaining("href","nove").isEmpty())hasNewGrades=true;
-                    if(hasNewGrades){
-                        final String newGradesHref=doc.getElementsByAttributeValueContaining("href","nove").attr("href");
-                        View.OnClickListener snackBarClickListener=new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                try {
-                                    String table=http.GetPageContent(eDnevnik+newGradesHref);
-                                    final Document parsedNoveOcjene=Jsoup.parse(table);
-
-
-
-                                            Elements tableRows=parsedNoveOcjene.getElementsByTag("tr");
-                                            tableRows.remove(0);
-                                            ArrayList<Elements> tableColumns=new ArrayList<>();
-                                            newGradeInfos=new ArrayList<>();
-                                            for(int i=0;i<tableRows.size();i++){
-                                                tableColumns.add(tableRows.get(i).getElementsByTag("td"));
-                                                newGradeInfos.add(new NewGradeInfo(tableColumns.get(i).get(0).text(),tableColumns.get(i).get(1).text(),tableColumns.get(i).get(2).text(),tableColumns.get(i).get(3).text()));
-                                            }
-
-                                            startActivity(new Intent(getApplicationContext(),NewGradesActivity.class));
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        };
-
-                        Snackbar.make(findViewById(android.R.id.content), "Nove ocjene", Snackbar.LENGTH_INDEFINITE)
-                                .setAction("Pregledaj", snackBarClickListener)
-                                .show();
-                    }
 
                     Element coursesDiv = doc.getElementById("courses");
                     Elements courses=coursesDiv.getElementsByClass("course");
@@ -222,6 +188,45 @@ public class OverallActivity extends AppCompatActivity {
                         }
                     });
 
+
+
+                    ArrayList<String> alNewGrades=new ArrayList<>();
+                    newGradeInfos=new ArrayList<>();
+                    alNewGrades=FileIO.readArrayListFromFile("newGrades",getApplicationContext());
+                    if(alNewGrades.size()>0){
+                        for(int i=0;i<alNewGrades.size()-3;i+=4){
+                            newGradeInfos.add(new NewGradeInfo(alNewGrades.get(i),alNewGrades.get(i+1),alNewGrades.get(i+2),alNewGrades.get(i+3)));
+                        }
+                    }
+
+
+                    if(!doc.getElementsByAttributeValueContaining("href","nove").isEmpty()){
+                        final String newGradesHref=doc.getElementsByAttributeValueContaining("href","nove").attr("href");
+                        String table=http.GetPageContent(eDnevnik+newGradesHref);
+                        final Document parsedNoveOcjene=Jsoup.parse(table);
+
+
+
+                        Elements tableRows=parsedNoveOcjene.getElementsByTag("tr");
+                        tableRows.remove(0);
+                        ArrayList<Elements> tableColumns=new ArrayList<>();
+                        for(int i=0;i<tableRows.size();i++){
+                            tableColumns.add(tableRows.get(i).getElementsByTag("td"));
+                            newGradeInfos.add(new NewGradeInfo(tableColumns.get(i).get(0).text(),tableColumns.get(i).get(1).text(),tableColumns.get(i).get(2).text(),tableColumns.get(i).get(3).text()));
+                        }
+
+
+                    }
+                    if(newGradeInfos.size()>0){
+                        Snackbar.make(findViewById(android.R.id.content), "Nove ocjene", Snackbar.LENGTH_INDEFINITE)
+                                .setAction("Pregledaj", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                            startActivity(new Intent(getApplicationContext(),NewGradesActivity.class));
+                                    }
+                                }).show();
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -280,7 +285,7 @@ public class OverallActivity extends AppCompatActivity {
         return String.format("%.2f",(float)sum/counter);
     }
 
-    public String getUserAverage(){
+    public static String getUserAverage(){
         int sum=0;
         int counter=0;
         for(int i=0;i<alUserGrade.size();i++){

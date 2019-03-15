@@ -1,16 +1,15 @@
 package com.example.kalkulatorocjenazae_dnevnik;
 
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
-import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ public class GraphOverall extends AppCompatActivity {
 
         BarDataSet dataSet = new BarDataSet(entries,""); // add entries to dataset
         dataSet.setStackLabels(new String[]{"Stvarne ocjene","Veće ocjene","Manje ocjene"});
-        dataSet.setColors(new int[]{Color.argb(120,100,100,100),Color.argb(255,100,200,100),Color.argb(255,200,100,100)});
+        dataSet.setColors(new int[]{Color.argb(255,58,113,252),Color.argb(255,100,200,100),Color.argb(255,200,100,100)});
         dataSet.setDrawValues(false);
 
 
@@ -76,7 +75,10 @@ public class GraphOverall extends AppCompatActivity {
         chart.getAxisLeft().setGranularity(1f);
         chart.getAxisLeft().setGranularityEnabled(true);
         chart.getAxisLeft().setLabelCount(OverallActivity.alUserGrade.size());
-        chart.getAxisRight().setEnabled(false);
+        LimitLine avg=new LimitLine(Float.parseFloat(OverallActivity.getUserAverage()),OverallActivity.getUserAverage());
+        avg.setTextColor(Color.argb(180,0,0,0));
+        chart.getAxisRight().addLimitLine(avg);
+
         chart.getXAxis().setDrawGridLines(false);
         chart.getAxisLeft().setDrawGridLines(false);
         chart.getAxisRight().setDrawGridLines(false);

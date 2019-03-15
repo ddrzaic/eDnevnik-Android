@@ -31,6 +31,7 @@ public class BackgroundWorker extends Worker {
     ArrayList<String> user;
     String loginFormUrl = "https://ocjene.skole.hr/pocetna/posalji/";
     String eDnevnik = "https://ocjene.skole.hr";
+    ArrayList<String> alNewGrades=new ArrayList<>();
     public BackgroundWorker(
             @NonNull Context appContext,
             @NonNull WorkerParameters workerParams) {
@@ -50,6 +51,11 @@ public class BackgroundWorker extends Worker {
             return Worker.Result.failure();
         } catch (Exception e) {
             return Worker.Result.failure();
+        }
+        try {
+            alNewGrades=FileIO.readArrayListFromFile("newGrades",getApplicationContext());
+        } catch (FileNotFoundException e) {
+            alNewGrades=new ArrayList<>();
         }
 
         new Thread(new Runnable() {
@@ -97,18 +103,20 @@ public class BackgroundWorker extends Worker {
 
                                 NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "eDnevnik")
                                         .setSmallIcon(R.drawable.ic_notify)
-                                        .setContentTitle("eDnevnik - Nove ocjene!")
-                                        .setContentText(newGradeInfos.get(i).course)
+                                        .setContentTitle(newGradeInfos.get(i).course)
+                                        .setContentText(newGradeInfos.get(i).note+"  "+newGradeInfos.get(i).grade)
                                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                                         .setContentIntent(pendingIntent)
-                                        .setStyle(new NotificationCompat.BigTextStyle()
-                                                .bigText(newGradeInfos.get(i).note+"  "+newGradeInfos.get(i).grade))
                                         .setAutoCancel(true);
 
                                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
                                 notificationManager.notify(id, mBuilder.build());
+                                alNewGrades.add(newGradeInfos.get(i).date);
+                                alNewGrades.add(newGradeInfos.get(i).course);
+                                alNewGrades.add(newGradeInfos.get(i).note);
+                                alNewGrades.add(newGradeInfos.get(i).grade);
                             }
-
+                            FileIO.writeArrayListToFile(alNewGrades,"newGrades",getApplicationContext());
                         }
                     }
                 } catch (UnsupportedEncodingException e) {
