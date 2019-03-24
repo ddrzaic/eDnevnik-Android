@@ -2,7 +2,6 @@ package com.example.kalkulatorocjenazae_dnevnik;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,8 +42,6 @@ public class customArrayAdapterOverall extends ArrayAdapter{
         if(!OverallActivity.alUserGrade.get(position).equals(String.format("%.0f",Float.valueOf(OverallActivity.alAverageGrade.get(position).substring(16,20).replace(",","."))))){
             tvUserGrade.setTextColor(Color.RED);
         }
-
         return view;
     }
-
 }

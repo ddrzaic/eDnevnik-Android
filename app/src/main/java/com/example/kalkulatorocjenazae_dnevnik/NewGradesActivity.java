@@ -15,7 +15,10 @@ public class NewGradesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_grades);
         lv=findViewById(R.id.listViewNewGrades);
-        customArrayAdapterNewGrade adapter=new customArrayAdapterNewGrade(getApplicationContext(),0,OverallActivity.newGradeInfos);
+        customArrayAdapterNewGrade adapter=new customArrayAdapterNewGrade(
+                getApplicationContext(),
+                0,
+                OverallActivity.newGradeInfos);
         lv.setAdapter(adapter);
         FileIO.writeArrayListToFile(new ArrayList<String>(),"newGrades",getApplicationContext());
     }

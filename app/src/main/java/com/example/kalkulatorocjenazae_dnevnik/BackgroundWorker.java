@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -74,22 +75,24 @@ public class BackgroundWorker extends Worker {
                     if(!result.contains("Pristup je dozvoljen isključivo korisnicima registriranim u sustavu")) {
                         Document doc= Jsoup.parse(result);
                         boolean hasNewGrades=false;
-                        if(!doc.getElementsByAttributeValueContaining("href","nove").isEmpty())hasNewGrades=true;
+                        if(!doc.getElementsByAttributeValueContaining("href","nove").isEmpty())
+                            hasNewGrades=true;
                         if(hasNewGrades){
-
-                            final String newGradesHref=doc.getElementsByAttributeValueContaining("href","nove").attr("href");
+                            final String newGradesHref=doc.getElementsByAttributeValueContaining("href","nove")
+                                    .attr("href");
                             String table=http.GetPageContent(eDnevnik+newGradesHref);
                             final Document parsedNoveOcjene=Jsoup.parse(table);
-
-
-
                             Elements tableRows=parsedNoveOcjene.getElementsByTag("tr");
                             tableRows.remove(0);
                             ArrayList<Elements> tableColumns=new ArrayList<>();
                             ArrayList<NewGradeInfo> newGradeInfos=new ArrayList<>();
                             for(int i=0;i<tableRows.size();i++){
                                 tableColumns.add(tableRows.get(i).getElementsByTag("td"));
-                                newGradeInfos.add(new NewGradeInfo(tableColumns.get(i).get(0).text(),tableColumns.get(i).get(1).text(),tableColumns.get(i).get(2).text(),tableColumns.get(i).get(3).text()));
+                                newGradeInfos.add(new NewGradeInfo(
+                                        tableColumns.get(i).get(0).text(),
+                                        tableColumns.get(i).get(1).text(),
+                                        tableColumns.get(i).get(2).text(),
+                                        tableColumns.get(i).get(3).text()));
                             }
 
 
@@ -99,9 +102,12 @@ public class BackgroundWorker extends Worker {
                                 int id = createID();
 
                                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
+                                        0,
+                                        intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "eDnevnik")
+                                NotificationCompat.Builder mBuilder =
+                                        new NotificationCompat.Builder(getApplicationContext(), "eDnevnik")
                                         .setSmallIcon(R.drawable.ic_notify)
                                         .setContentTitle(newGradeInfos.get(i).course)
                                         .setContentText(newGradeInfos.get(i).note+"  "+newGradeInfos.get(i).grade)
@@ -109,14 +115,16 @@ public class BackgroundWorker extends Worker {
                                         .setContentIntent(pendingIntent)
                                         .setAutoCancel(true);
 
-                                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+                                NotificationManagerCompat notificationManager =
+                                        NotificationManagerCompat.from(getApplicationContext());
                                 notificationManager.notify(id, mBuilder.build());
                                 alNewGrades.add(newGradeInfos.get(i).date);
                                 alNewGrades.add(newGradeInfos.get(i).course);
                                 alNewGrades.add(newGradeInfos.get(i).note);
                                 alNewGrades.add(newGradeInfos.get(i).grade);
                             }
-                            FileIO.writeArrayListToFile(alNewGrades,"newGrades",getApplicationContext());
+                            FileIO.writeArrayListToFile(alNewGrades,
+                                    "newGrades",getApplicationContext());
                         }
                     }
                 } catch (UnsupportedEncodingException e) {
@@ -127,7 +135,7 @@ public class BackgroundWorker extends Worker {
             }
         }).start();
 
-
+        Log.e("BackgroundWorker","Background work done!");
         return Worker.Result.success();
     }
 

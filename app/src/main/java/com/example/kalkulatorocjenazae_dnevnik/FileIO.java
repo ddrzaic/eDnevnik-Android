@@ -20,7 +20,10 @@ import java.util.ArrayList;
 public class FileIO {
     public static void writeToFile(String data, Context context, String filename) {
         try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(filename, Context.MODE_PRIVATE));
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(
+                    context.openFileOutput(
+                            filename,
+                            Context.MODE_PRIVATE));
             outputStreamWriter.write(data);
             outputStreamWriter.close();
         }
@@ -29,11 +32,8 @@ public class FileIO {
         }
     }
 
-
     public static String readFromFile(Context context,String filename) throws FileNotFoundException {
-
         String ret = "";
-
         try {
             InputStream inputStream = context.openFileInput(filename);
 
@@ -54,7 +54,6 @@ public class FileIO {
         catch (IOException e) {
             throw new FileNotFoundException();
         }
-
         return ret;
     }
 
@@ -84,8 +83,6 @@ public class FileIO {
             }catch(IOException e){
                 throw new FileNotFoundException(e.toString());
             }catch(ClassNotFoundException c){}//readObject()
-
-
             return al;
         }
 }

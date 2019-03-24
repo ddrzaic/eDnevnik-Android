@@ -3,21 +3,19 @@ package com.example.kalkulatorocjenazae_dnevnik;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -38,21 +36,16 @@ public class CourseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
         emptyArraylists();
-
-
         Intent intent = getIntent();
         TextView tvCourseName=findViewById(R.id.courseNameTV);
         list = findViewById(R.id.listGrades);
         tvAverage=findViewById(R.id.tvAvg);
         FloatingActionButton fab=findViewById(R.id.fabCourse);
         courseHTML=intent.getStringExtra("CourseHTMLExtra");
-
         Document parsedCourseHtml= Jsoup.parse(courseHTML);
-        System.out.println(parsedCourseHtml.html());
-
         String teacherName=parsedCourseHtml.select("span.course-info").text();
-
-        courseName=parsedCourseHtml.getElementsByClass("course-name").first().text().replace(teacherName,"");
+        courseName=parsedCourseHtml.getElementsByClass("course-name").first().text()
+                .replace(teacherName,"");
         tvCourseName.setText(courseName);
 
         Elements parsedGrades = parsedCourseHtml.getElementsByClass("ocjena");

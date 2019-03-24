@@ -47,21 +47,13 @@ public class HTTPSConnection {
         conn.setRequestProperty("Referer", "https://ocjene.skole.hr/pocetna/prijava");
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         conn.setRequestProperty("Content-Length", Integer.toString(postParams.length()));
-
         conn.setDoOutput(true);
         conn.setDoInput(true);
-
         // Send post request
         DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
         wr.writeBytes(postParams);
         wr.flush();
         wr.close();
-
-        int responseCode = conn.getResponseCode();
-        System.out.println("\nSending 'POST' request to URL : " + url);
-        System.out.println("Post parameters : " + postParams);
-        System.out.println("Response Code : " + responseCode);
-
         BufferedReader in =
                 new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String inputLine;
@@ -71,22 +63,15 @@ public class HTTPSConnection {
             response.append(inputLine);
         }
         in.close();
-
-        // System.out.println(response.toString());
-
     }
 
 
     public String GetPageContent(String url) throws Exception {
-
         URL obj = new URL(url);
         conn = (HttpsURLConnection) obj.openConnection();
-
-        // default is GET
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Connection", "keep-alive");
         conn.setUseCaches(false);
-
         // act like a browser
         conn.setRequestProperty("User-Agent", USER_AGENT);
         conn.setRequestProperty("Accept",
@@ -102,7 +87,6 @@ public class HTTPSConnection {
         int responseCode = conn.getResponseCode();
         System.out.println("\nSending 'GET' request to URL : " + url);
         System.out.println("Response Code : " + responseCode);
-
         BufferedReader in =
                 new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String inputLine;
@@ -112,17 +96,13 @@ public class HTTPSConnection {
             response.append(inputLine);
         }
         in.close();
-
         // Get the response cookies
-
-        if(!conn.getHeaderFields().get("Set-Cookie").toString().startsWith("[csr")){ //prvi sljedeći get makne PHPSESSID iz cookyja, pa to moramo spriječiti, u suprotnom slijedi log out
+        if(!conn.getHeaderFields().get("Set-Cookie").toString().startsWith("[csr")){
+            //prvi sljedeći get makne PHPSESSID iz cookyja, pa to moramo spriječiti,
+            // u suprotnom slijedi log out
             setCookies(conn.getHeaderFields().get("Set-Cookie"));
         }
-
-
         return response.toString();
-
-
     }
 
     public void setCookies(List<String> cookies) {
@@ -134,12 +114,7 @@ public class HTTPSConnection {
 
     public String getFormParams(String html, String username, String password)
             throws UnsupportedEncodingException {
-
-        System.out.println("Extracting form's data...");
-
         Document doc = Jsoup.parse(html);
-
-        // Google form id
         Element loginform = doc.getElementById("login-students");
         Elements inputElements = loginform.getElementsByTag("input");
         List<String> paramList = new ArrayList<String>();
@@ -153,8 +128,6 @@ public class HTTPSConnection {
                 value = password;
             paramList.add(key + "=" + URLEncoder.encode(value, "UTF-8"));
         }
-
-        // build parameters list
         StringBuilder result = new StringBuilder();
         for (String param : paramList) {
             if (result.length() == 0) {
@@ -165,7 +138,5 @@ public class HTTPSConnection {
         }
         return result.toString();
     }
-
-
-
 }
+

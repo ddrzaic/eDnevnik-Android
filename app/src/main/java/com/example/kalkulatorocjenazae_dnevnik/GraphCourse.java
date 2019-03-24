@@ -18,18 +18,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GraphCourse extends AppCompatActivity {
-    LineChart chart;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph_course);
-
+        LineChart chart;
         chart=findViewById(R.id.chartCourse);
         List<Entry> entries = new ArrayList<Entry>();
 
         for(int i=CourseActivity.alGrades.size()-1;i>=0;i--){
-            entries.add(new Entry(CourseActivity.alGrades.size()-(i+1),Float.parseFloat(CourseActivity.alGrades.get(i))));
+            entries.add(new Entry(CourseActivity.alGrades.size()-(i+1),
+                    Float.parseFloat(CourseActivity.alGrades.get(i))));
         }
 
         ///////////////////////////////////////
@@ -47,10 +48,10 @@ public class GraphCourse extends AppCompatActivity {
         dataSet.setColor(Color.argb(255,50,50,255));
         LineData lineData = new LineData(dataSet);
         lineData.setValueTextSize(7);
-        //lineData.setDrawValues(false);
         lineData.setValueFormatter(new IValueFormatter() {
             @Override
-            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex,
+                                            ViewPortHandler viewPortHandler) {
                 return gradeGrade.get((int) entry.getX());
             }
         });
@@ -61,10 +62,10 @@ public class GraphCourse extends AppCompatActivity {
         chart.getAxisLeft().setDrawGridLines(false);
         chart.getAxisRight().setDrawGridLines(false);
         chart.getAxisLeft().setGranularity(1f);
-       // chart.getXAxis().setDrawLabels(false);
         chart.getAxisLeft().setAxisMinimum(1);
         chart.getAxisLeft().setLabelCount(6);
-        chart.getAxisLeft().setValueFormatter(new IndexAxisValueFormatter(new String[]{"","1","2","3","4","5"}));
+        chart.getAxisLeft().setValueFormatter(new IndexAxisValueFormatter(
+                new String[]{"","1","2","3","4","5"}));
         chart.getXAxis().setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
@@ -72,7 +73,6 @@ public class GraphCourse extends AppCompatActivity {
             }
         });
         chart.getAxisLeft().setGranularityEnabled(true);
-        //chart.getXAxis().setDrawGridLines(false);
         chart.getXAxis().setDrawAxisLine(false);
         chart.getDescription().setEnabled(false);
         chart.getAxisRight().setEnabled(false);
