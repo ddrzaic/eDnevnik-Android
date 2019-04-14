@@ -201,11 +201,13 @@ public class OverallActivity extends AppCompatActivity {
                                                                 newGradeInfos.add(new NewGradeInfo(alNewGrades.get(i),alNewGrades.get(i+1),
                                                                         alNewGrades.get(i+2),alNewGrades.get(i+3)));
                                                             }
-                                                            Snackbar.make(findViewById(android.R.id.content), "Nove ocjene", Snackbar.LENGTH_INDEFINITE)
+                                                            Snackbar.make(findViewById(android.R.id.content), "Nove ocjene",
+                                                                    Snackbar.LENGTH_INDEFINITE)
                                                                     .setAction("Pregledaj", new View.OnClickListener() {
                                                                         @Override
                                                                         public void onClick(View v) {
-                                                                            startActivity(new Intent(getApplicationContext(),NewGradesActivity.class));
+                                                                            startActivity(new Intent(getApplicationContext(),
+                                                                                    NewGradesActivity.class));
                                                                         }
                                                                     }).show();
                                                         }

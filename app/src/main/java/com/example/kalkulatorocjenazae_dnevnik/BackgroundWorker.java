@@ -113,7 +113,8 @@ public class BackgroundWorker extends Worker {
                                         .setContentText(newGradeInfos.get(i).note+"  "+newGradeInfos.get(i).grade)
                                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                                         .setContentIntent(pendingIntent)
-                                        .setAutoCancel(true);
+                                        .setAutoCancel(true)
+                                        .setStyle(new NotificationCompat.BigTextStyle().bigText(newGradeInfos.get(i).note+"  "+newGradeInfos.get(i).grade));
 
                                 NotificationManagerCompat notificationManager =
                                         NotificationManagerCompat.from(getApplicationContext());

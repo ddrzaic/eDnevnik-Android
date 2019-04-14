@@ -39,7 +39,6 @@ public class ClassesActivity extends AppCompatActivity {
     String eDnevnik = "https://ocjene.skole.hr";
     ArrayList<String> alClasses=new ArrayList<>();
     ArrayList<String> alHref=new ArrayList<>();
-    boolean workScheduled=false;
     boolean workRunning=false;
     WorkManager instance;
     ListenableFuture<List<WorkInfo>> statuses;
@@ -66,16 +65,13 @@ public class ClassesActivity extends AppCompatActivity {
         createNotificationChannel();
         instance = WorkManager.getInstance();
         statuses  = instance.getWorkInfosByTag("work");
-
-
         PeriodicWorkRequest myWork=null;
-
             PeriodicWorkRequest.Builder WorkBuilder =
                     new PeriodicWorkRequest.Builder(BackgroundWorker.class, 15,
                             TimeUnit.MINUTES).addTag("work");
             myWork = WorkBuilder.build();
-            WorkManager.getInstance().enqueueUniquePeriodicWork("work", ExistingPeriodicWorkPolicy.KEEP,myWork); //Start BackgroungWorker
-
+        //Start BackgroungWorker
+            WorkManager.getInstance().enqueueUniquePeriodicWork("work", ExistingPeriodicWorkPolicy.KEEP,myWork);
         WorkManager.getInstance().getWorkInfoByIdLiveData(myWork.getId())
                 .observe(ClassesActivity.this, new Observer<WorkInfo>() {
                     @Override
