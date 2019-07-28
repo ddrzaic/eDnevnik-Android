@@ -10,4 +10,8 @@ Neke od tih mogućnosti su:
 * dugim pritiskom na neki od predmeta moguće je manipulirati "zaključnim" ocjenama u svrhu računanja prosjeka općeg uspjeha.
 * spremanje više korisničkih računa
 
-Aplikaciju koristiti na vlastitu odgovornost 
+
+![img](/Screenshot.png)
+
+
+Aplikaciju koristiti na vlastitu odgovornost.
