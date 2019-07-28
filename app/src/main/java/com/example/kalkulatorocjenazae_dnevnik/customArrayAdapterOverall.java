@@ -39,8 +39,14 @@ public class customArrayAdapterOverall extends ArrayAdapter{
         tvAverageGrade.setText(course.averageGrade);
         tvUserGrade.setText(course.userGrade);
 
-        if(!OverallActivity.alUserGrade.get(position).equals(String.format("%.0f",Float.valueOf(OverallActivity.alAverageGrade.get(position).substring(16,20).replace(",","."))))){
+        if(!OverallActivity.alUserGrade.get(position).equals(OverallActivity.alRealGrade.get(position))){
             tvUserGrade.setTextColor(Color.RED);
+        }
+        if(!OverallActivity.alUserFinal.get(position).equals("")){
+            tvCourseName.setTextColor(Color.BLUE);
+            tvAverageGrade.setText(course.averageGrade+"\nZaključeno "+OverallActivity.alUserFinal.get(position));
+            tvAverageGrade.setTextColor(Color.BLUE);
+            tvTeacherName.setTextColor(Color.BLUE);
         }
         return view;
     }

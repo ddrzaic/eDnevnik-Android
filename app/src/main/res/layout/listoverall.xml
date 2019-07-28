@@ -26,10 +26,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="8dp"
+        android:foregroundTint="#00F80909"
         android:text="TextView"
         android:textAppearance="@android:style/TextAppearance.Material.Small"
         app:layout_constraintEnd_toStartOf="@+id/gradeTV"
         app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@android:color/background_dark"
+
         app:layout_constraintTop_toBottomOf="@+id/courseNameTV" />
 
     <TextView
@@ -42,6 +45,7 @@
         android:textAppearance="@android:style/TextAppearance.Material.Small"
         app:layout_constraintEnd_toStartOf="@+id/gradeTV"
         app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@android:color/background_dark"
         app:layout_constraintTop_toBottomOf="@+id/TeacherNameTV" />
 
     <TextView
@@ -53,6 +57,7 @@
         android:text="TextView"
         android:textAppearance="@android:style/TextAppearance.Material.Large"
         app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@android:color/background_dark"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -60,6 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:textColor="@android:color/background_dark"
         android:textAppearance="@android:style/TextAppearance.Material.Small"
         android:textSize="8sp"
         app:layout_constraintStart_toStartOf="parent"

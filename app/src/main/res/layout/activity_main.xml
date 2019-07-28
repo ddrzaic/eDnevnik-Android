@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/usr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,4 +52,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pass"
         app:layout_constraintVertical_bias="0.00999999" />
+
+    <Switch
+        android:id="@+id/saveUser"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="24dp"
+        android:text="Zapamti"
+        app:layout_constraintBottom_toBottomOf="@+id/loginBttn"
+        app:layout_constraintEnd_toStartOf="@+id/loginBttn"
+        app:layout_constraintStart_toStartOf="@+id/pass"
+        app:layout_constraintTop_toTopOf="@+id/loginBttn" />
 </android.support.constraint.ConstraintLayout>

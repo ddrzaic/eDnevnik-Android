@@ -70,7 +70,13 @@ public class BackgroundWorker extends Worker {
                     page = http.GetPageContent(loginFormUrl);
                     String postParams = http.getFormParams(page, username, passwd);
                     http.sendPost(loginFormUrl, postParams);
-                    String result = http.GetPageContent(eDnevnik+currentClassHref);
+                    String result="";
+                    if(currentClassHref.equals("prvaGodina")){
+                        result = http.GetPageContent(eDnevnik);
+                    }else{
+                        result = http.GetPageContent(eDnevnik+currentClassHref);
+                    }
+
 
                     if(!result.contains("Pristup je dozvoljen isključivo korisnicima registriranim u sustavu")) {
                         Document doc= Jsoup.parse(result);

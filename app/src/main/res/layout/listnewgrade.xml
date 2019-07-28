@@ -14,6 +14,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:text="Predmet"
+        android:textColor="@android:color/background_dark"
         app:layout_constraintEnd_toStartOf="@+id/newGradeGrade"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,6 +27,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="Bilješka"
+        android:textColor="@android:color/background_dark"
         app:layout_constraintEnd_toStartOf="@+id/newGradeGrade"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newGradeCourse" />
@@ -38,6 +40,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="Datum"
+        android:textColor="@android:color/background_dark"
         app:layout_constraintEnd_toStartOf="@+id/newGradeGrade"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newGradeNote" />

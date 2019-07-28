@@ -1,9 +1,12 @@
 package com.example.kalkulatorocjenazae_dnevnik;
 
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.arch.lifecycle.Observer;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -22,20 +25,28 @@ import org.jsoup.select.Elements;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
+
+import com.google.common.util.concurrent.ListenableFuture;
 
 public class OverallActivity extends AppCompatActivity {
     String yearUrl="";
     String year="";
+    String name="";
     public static ArrayList<String> alCourses = new ArrayList<>();
     ArrayList<String> alTeachers = new ArrayList<>();
     ArrayList<String> alCourseHTML = new ArrayList<>();
     public static ArrayList<String> alAverageGrade = new ArrayList<>();
     public static ArrayList<String> alRealGrade = new ArrayList<>();
     public static ArrayList<String> alUserGrade = new ArrayList<>();
+    public static ArrayList<String> alUserFinal = new ArrayList<>();
     public static ArrayList<NewGradeInfo> newGradeInfos;
     ArrayList<String> alHref = new ArrayList<>();
     ArrayList<CourseInfo> alCourseInfo = new ArrayList<>();
@@ -50,6 +61,8 @@ public class OverallActivity extends AppCompatActivity {
     HTTPSConnection http = new HTTPSConnection();
     String examsHref="";
     boolean workAlreadyDone=false;
+    boolean workRunning=false;
+    String intentHtml="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +76,7 @@ public class OverallActivity extends AppCompatActivity {
         emptyArraylist();
         Intent intent = getIntent();
         yearUrl=intent.getStringExtra("yearUrlExtra");
+        intentHtml=intent.getStringExtra("html");
         year=intent.getStringExtra("ClassExtra");
         workAlreadyDone=intent.getBooleanExtra("workDone",false);
         graphButton.setVisibility(View.INVISIBLE);
@@ -75,17 +89,44 @@ public class OverallActivity extends AppCompatActivity {
             public void run() {
                 http = new HTTPSConnection();
                 try {
-                    String result = http.GetPageContent(yearUrl);
-                    Document doc=Jsoup.parse(result);
+                    String result="";
+                    if(yearUrl.equals("prvaGodina")){
+                        result=intentHtml;
+                        year="prvaGodina";
+                        FileIO.writeToFile("prvaGodina",getApplicationContext(),"CurrentClassHref");
+                        WorkManager instance;
+                        ListenableFuture<List<WorkInfo>> statuses;
+                        createNotificationChannel();
+                        instance = WorkManager.getInstance();
+                        statuses  = instance.getWorkInfosByTag("work");
+                        PeriodicWorkRequest myWork=null;
+                        PeriodicWorkRequest.Builder WorkBuilder =
+                                new PeriodicWorkRequest.Builder(BackgroundWorker.class, 15,
+                                        TimeUnit.MINUTES).addTag("work");
+                        myWork = WorkBuilder.build();
+                        //Start BackgroungWorker
+                        WorkManager.getInstance().enqueueUniquePeriodicWork("work", ExistingPeriodicWorkPolicy.KEEP,myWork);
+                        WorkManager.getInstance().getWorkInfoByIdLiveData(myWork.getId())
+                                .observe(OverallActivity.this, new Observer<WorkInfo>() {
+                                    @Override
+                                    public void onChanged(@Nullable WorkInfo workInfo) {
+                                        if(workInfo.getState().equals(WorkInfo.State.RUNNING)){
+                                            workRunning=true;
+                                        }
+                                    }
+                                });
+                    }else{
+                        result = http.GetPageContent(yearUrl);
+                    }
 
+                    Document doc=Jsoup.parse(result);
+                    name=doc.getElementsByTag("b").first().text();
                     Element coursesDiv = doc.getElementById("courses");
                     Elements courses=coursesDiv.getElementsByClass("course");
                     examsHref=doc.getElementsByAttributeValueContaining("href","ispiti").attr("href");
 
 
 
-
-                    Log.e("year   ",year);
                     for(Element course : courses){
                         alTeachers.add(course.select("span.course-info").text());
                         alCourses.add(course.text());
@@ -105,14 +146,24 @@ public class OverallActivity extends AppCompatActivity {
                         alCourseHTML.add(temp);
                         Document temp2 = Jsoup.parse(temp);
                         alAverageGrade.add(temp2.getElementsByClass("average").first().text());
-                        alRealGrade.add(String.format("%.0f",Float.valueOf(alAverageGrade.get(i).substring(16,20).replace(",","."))));
-                    }
-                    try{
-                        alUserGrade=FileIO.readArrayListFromFile(year,getApplicationContext());
-                    }catch (FileNotFoundException e){
-                        for(int i = 0; i < alHref.size(); i++){
-                            alUserGrade.add(String.format("%.0f",Float.valueOf(alAverageGrade.get(i).substring(16,20).replace(",","."))));
+                        if(temp2.getElementsByTag("table").first().getElementsByTag("td").last().text().contains("(")){
+                            alUserFinal.add(temp2.getElementsByTag("table").first().getElementsByTag("td").last().text());
+                            String tempFinal=temp2.getElementsByTag("table").first().getElementsByTag("td").last().text();
+                            tempFinal=tempFinal.substring(tempFinal.length()-2,tempFinal.length()-1);
+                            alRealGrade.add(tempFinal);
+                        }else{
+                            alUserFinal.add("");
+                            alRealGrade.add(String.format("%.0f",Float.valueOf(alAverageGrade.get(i).substring(16,20).replace(",","."))));
                         }
+
+                    }
+
+                    try{
+                        alUserGrade=FileIO.readArrayListFromFile(year+name,getApplicationContext());
+                    }catch (FileNotFoundException e){
+                        alUserGrade=new ArrayList<>(alRealGrade);
+                        FileIO.writeArrayListToFile(alUserGrade,year+name,getApplicationContext());
+
                     }
                     for(int i=0;i<alHref.size();i++){
                         alCourseInfo.add(new CourseInfo(alCourses.get(i),alTeachers.get(i),alAverageGrade.get(i),alUserGrade.get(i)));
@@ -272,7 +323,7 @@ public class OverallActivity extends AppCompatActivity {
                 for(int i=0;i<alCourseInfo.size();i++){
                     alCourseInfo.set(i,new CourseInfo(alCourses.get(i),alTeachers.get(i),alAverageGrade.get(i),alUserGrade.get(i)));
                 }
-                FileIO.writeArrayListToFile(alUserGrade,year,getApplicationContext());
+                FileIO.writeArrayListToFile(alUserGrade,year+name,getApplicationContext());
                 adapter.notifyDataSetChanged();
                 tvUserAverage.setText("Prosjek: "+getUserAverage());
             }
@@ -287,7 +338,7 @@ public class OverallActivity extends AppCompatActivity {
         alCourseInfo.set(pos,new CourseInfo(alCourseInfo.get(pos).courseName,
                 alCourseInfo.get(pos).teacherName,alCourseInfo.get(pos).averageGrade,grade));
         adapter.notifyDataSetChanged();
-        FileIO.writeArrayListToFile(alUserGrade,year,getApplicationContext());
+        FileIO.writeArrayListToFile(alUserGrade,year+name,getApplicationContext());
         tvUserAverage.setText("Prosjek: "+getUserAverage());
     }
 
@@ -323,12 +374,27 @@ public class OverallActivity extends AppCompatActivity {
         alHref=new ArrayList<>();
         alAverageGrade=new ArrayList<>();
         alCourses=new ArrayList<>();
+        alUserFinal = new ArrayList<>();
     }
 
     @Override
     public void onBackPressed(){
         finishAffinity();
         finish();
+    }
+
+    private void createNotificationChannel() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "eDnevnik";
+            String description = "Kalkulator ocjena za eDnevnik";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("eDnevnik", name, importance);
+            channel.setDescription(description);
+            channel.enableVibration(true);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
 
