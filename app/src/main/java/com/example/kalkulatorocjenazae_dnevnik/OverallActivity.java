@@ -145,7 +145,19 @@ public class OverallActivity extends AppCompatActivity {
                         String temp = http.GetPageContent(eDnevnik+alHref.get(i));
                         alCourseHTML.add(temp);
                         Document temp2 = Jsoup.parse(temp);
-                        alAverageGrade.add(temp2.getElementsByClass("average").first().text());
+                        ArrayList<String> alGrades = new ArrayList<>();
+                        Elements parsedGrades = temp2.getElementsByClass("ocjena");
+                        int sum=0;
+                        for(Element element : parsedGrades){
+                            alGrades.add(element.text());
+                        }
+                        for(int g=0;g<alGrades.size();g++){
+                            sum+=Integer.parseInt(alGrades.get(g));
+                        }
+                        if(sum==0){
+                           alAverageGrade.add("0.00");
+                        }else alAverageGrade.add(String.format("%.2f",(float)sum/alGrades.size()));
+
                         if(temp2.getElementsByTag("table").first().getElementsByTag("td").last().text().contains("(")){
                             alUserFinal.add(temp2.getElementsByTag("table").first().getElementsByTag("td").last().text());
                             String tempFinal=temp2.getElementsByTag("table").first().getElementsByTag("td").last().text();
@@ -153,7 +165,7 @@ public class OverallActivity extends AppCompatActivity {
                             alRealGrade.add(tempFinal);
                         }else{
                             alUserFinal.add("");
-                            alRealGrade.add(String.format("%.0f",Float.valueOf(alAverageGrade.get(i).substring(16,20).replace(",","."))));
+                            alRealGrade.add(String.format("%.0f",Float.valueOf(alAverageGrade.get(i))));
                         }
 
                     }

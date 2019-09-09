@@ -29,7 +29,7 @@ public class CourseActivity extends AppCompatActivity {
     ListView list;
     ArrayAdapter adapter;
     TextView tvAverage;
-
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class CourseActivity extends AppCompatActivity {
         TextView tvCourseName=findViewById(R.id.courseNameTV);
         list = findViewById(R.id.listGrades);
         tvAverage=findViewById(R.id.tvAvg);
-        FloatingActionButton fab=findViewById(R.id.fabCourse);
+        fab=findViewById(R.id.fabCourse);
         courseHTML=intent.getStringExtra("CourseHTMLExtra");
         Document parsedCourseHtml= Jsoup.parse(courseHTML);
         String teacherName=parsedCourseHtml.select("span.course-info").text();
@@ -142,6 +142,7 @@ public class CourseActivity extends AppCompatActivity {
     public void setAverage(){
         if(alGrades.size()==0){
             tvAverage.setText("Nema ocjena");
+            fab.hide();
         }else{
             int sum=0;
             for(int i=0;i<alGrades.size();i++){
