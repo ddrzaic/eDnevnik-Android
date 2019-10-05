@@ -26,6 +26,7 @@ import org.jsoup.select.Elements;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import androidx.work.ExistingPeriodicWorkPolicy;
@@ -165,7 +166,7 @@ public class OverallActivity extends AppCompatActivity {
                             alRealGrade.add(tempFinal);
                         }else{
                             alUserFinal.add("");
-                            alRealGrade.add(String.format("%.0f",Float.valueOf(alAverageGrade.get(i))));
+                            alRealGrade.add(String.valueOf(Math.round(Float.parseFloat(alAverageGrade.get(i).replace(",",".")))));
                         }
 
                     }
