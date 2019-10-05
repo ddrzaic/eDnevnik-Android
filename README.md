@@ -1,6 +1,6 @@
 # eDnevnik Android aplikacija
 
-[Preuzimanje aplikacije](https://github.com/ddrzaic/eDnevnik-Android/raw/master/release/app-release.apk)
+[Preuzimanje aplikacije](https://github.com/ddrzaic/eDnevnik-Android/raw/master/app/release/app-release.apk)
 
 
 eDnevnik je android aplikacija koja pruža dodatne mogućnosti u sustavu eDnevnik.
