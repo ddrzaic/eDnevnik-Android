@@ -27,7 +27,7 @@ public class GraphOverall extends AppCompatActivity {
 
 
         for(int i=0;i<OverallActivity.alCourses.size();i++){
-            if(!OverallActivity.alUserGrade.get(i).equals("0")){
+            if(!OverallActivity.alRealGrade.get(i).equals("0.00")){
                 if(Float.parseFloat(OverallActivity.alUserGrade.get(i))>
                         Float.parseFloat(OverallActivity.alRealGrade.get(i))){
                     entries.add(new BarEntry(i,
@@ -77,7 +77,7 @@ public class GraphOverall extends AppCompatActivity {
         chart.getAxisLeft().setGranularity(1f);
         chart.getAxisLeft().setGranularityEnabled(true);
         chart.getAxisLeft().setLabelCount(OverallActivity.alUserGrade.size());
-        LimitLine avg=new LimitLine(Float.parseFloat(OverallActivity.getUserAverage()),
+        LimitLine avg=new LimitLine(Float.parseFloat(OverallActivity.getUserAverage().replace(",",".")),
                 OverallActivity.getUserAverage());
         avg.setTextColor(Color.argb(180,0,0,0));
         chart.getAxisRight().addLimitLine(avg);
