@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                     String postParams = http.getFormParams(page, etUsername.getText().toString(), etPassword.getText().toString());
                     http.sendPost(loginFormUrl, postParams);
                     String result = http.GetPageContent(eDnevnik);
+                    Log.e("result",result);
                     if(!result.contains("Pristup je dozvoljen isključivo korisnicima registriranim u sustavu") && result.contains("Odaberite razred i školsku godinu")) {
                         Intent intent = new Intent(getApplicationContext(), ClassesActivity.class);
                         intent.putExtra("resultExtra", result);

@@ -1,6 +1,9 @@
 package com.example.kalkulatorocjenazae_dnevnik;
 
 
+import android.text.TextUtils;
+import android.util.Log;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -11,10 +14,12 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpCookie;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -22,7 +27,6 @@ public class HTTPSConnection {
 
     public List<String> cookies;
     public HttpsURLConnection conn;
-
     public final String USER_AGENT = "Mozilla/5.0";
 
 
@@ -40,9 +44,12 @@ public class HTTPSConnection {
         conn.setRequestProperty("Accept",
                 "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
         conn.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-        for (String cookie : this.cookies) {
-            conn.addRequestProperty("Cookie", cookie.split(";", 1)[0]);
+
+
+        for (String cookie: this.cookies) {
+            conn.setRequestProperty("Cookie",  cookie.split(";", 1)[0]);
         }
+
         conn.setRequestProperty("Connection", "keep-alive");
         conn.setRequestProperty("Referer", "https://ocjene.skole.hr/pocetna/prijava");
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -78,10 +85,13 @@ public class HTTPSConnection {
                 "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
         conn.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
         cookies=getCookies();
-        System.out.println("kukiji"+cookies);
+
+
+
+
         if (cookies != null) {
             for (String cookie : this.cookies) {
-                conn.addRequestProperty("Cookie", cookie.split(";", 1)[0]);
+                conn.setRequestProperty("Cookie",  cookie.split(";", 1)[0]);
             }
         }
         int responseCode = conn.getResponseCode();
@@ -97,11 +107,11 @@ public class HTTPSConnection {
         }
         in.close();
         // Get the response cookies
-        if(!conn.getHeaderFields().get("Set-Cookie").toString().startsWith("[csr")){
-            //prvi sljedeći get makne PHPSESSID iz cookyja, pa to moramo spriječiti,
-            // u suprotnom slijedi log out
+
+
             setCookies(conn.getHeaderFields().get("Set-Cookie"));
-        }
+
+
         return response.toString();
     }
 
